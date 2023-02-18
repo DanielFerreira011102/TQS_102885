@@ -17,7 +17,7 @@ The key takeaways from this exercise are:
 Overall, this exercise provides a practical introduction to software testing and quality assurance, including writing effective unit tests, measuring code coverage, and evaluating the effectiveness of a test suite.
 
 ## Steps
-**Step 2a: Pull the project and familiarize yourself with the solution**
+**Step 2a: Pull the project and familiarize yourself with the solution** <br>
 The first step is to pull the "euromillions-play" project and get familiar with the code. The project includes several classes and tests, including:
 
 - `BoundedSetOfNaturals`: a data structure that represents a set of natural numbers within a specified range
@@ -25,16 +25,14 @@ The first step is to pull the "euromillions-play" project and get familiar with 
 - `CouponEuromillion`: one or more `Dip` objects, representing a player's bet
 - `EuromillionsDraw`: a class that holds the winning `Dip` and can find matches for a given player's `CouponEuromillion`
 
-**Step 2b: Make necessary changes to existing tests** 
-
+**Step 2b: Make necessary changes to existing tests** <br>
 The next step is to make the necessary changes to the existing tests to ensure that they all pass. There is one failing test that needs to be fixed:
 
 `testConstructorFromBadRanges` in `DipTest`: This test checks that the `Dip` constructor raises an exception if it is given an invalid number range. You will need to change the implementation of `Dip` to raise the expected exception when invalid numbers are given as input.
 
 Note that it is possible to temporarily suspend a test using the `@Disabled tag`, which can be useful while debugging the tests themselves.
 
-**Step 2c: Assess the test coverage level**
-
+**Step 2c: Assess the test coverage level** <br>
 Once the tests are passing, the next step is to assess the test coverage level of the project. To do this, you will need to:
 
 1. Configure the Maven project to run Jacoco analysis, if needed.
@@ -47,12 +45,10 @@ Once the tests are passing, the next step is to assess the test coverage level o
 
 Note that IntelliJ has an integrated option to run the tests with coverage checks, but doing it at the Maven level, allows the use of this feature in multiple tools.
 
-**Step 2c: Write additional tests for BoundedSetOfNaturals**
-
+**Step 2c: Write additional tests for BoundedSetOfNaturals** <br>
 The next step is to write additional tests for the `BoundedSetOfNaturals` class to ensure that it meets its expected contract. You should consider what kind of unit tests are worth writing for proper validation of `BoundedSetOfNaturals`.
 
-**Step 2d: Run Jacoco coverage analysis and compare results**
-
+**Step 2d: Run Jacoco coverage analysis and compare results** <br>
 Finally, run the Jacoco coverage analysis again and compare the results with the previous analysis. In particular, compare the "before" and "after" results for the `BoundedSetOfNaturals` class to see if the additional tests have improved the coverage.
 
 ## Evidence  of the  coverage for  “BoundedSetOfNaturals”
