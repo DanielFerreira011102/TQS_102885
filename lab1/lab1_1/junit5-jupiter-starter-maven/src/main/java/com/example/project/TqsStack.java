@@ -53,7 +53,7 @@ public class TqsStack<T> {
 	 * Removes and returns the top element from the stack.
 	 *
 	 * @return the top element of the stack
-	 * @throws RuntimeException if the stack is empty
+	 * @throws NoSuchElementException if the stack is empty
 	 */
 	public T pop() {
 		if (isEmpty()) {
@@ -66,7 +66,7 @@ public class TqsStack<T> {
 	 * Returns the top element of the stack without removing it.
 	 *
 	 * @return the top element of the stack
-	 * @throws RuntimeException if the stack is empty
+	 * @throws NoSuchElementException if the stack is empty
 	 */
 	public T peek() {
 		if (isEmpty()) {
