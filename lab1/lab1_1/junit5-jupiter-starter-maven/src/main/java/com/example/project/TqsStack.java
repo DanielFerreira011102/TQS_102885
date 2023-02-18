@@ -19,7 +19,11 @@ public class TqsStack<T> {
 	 * The underlying LinkedList used to store the stack elements.
 	 */
 	private final LinkedList<T> stack;
-	private final int maxSize;
+
+	/**
+         * The maximum number of elements that can be stored in the stack.
+         */
+        private final int maxSize;
 
 	/**
 	 * Constructs a new empty stack.
