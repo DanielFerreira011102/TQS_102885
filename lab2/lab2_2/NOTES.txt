@@ -1,7 +1,0 @@
-UnnecessaryStubbingException
-@MockitoSettings(strictness = Strictness.LENIENT)
-
-The subject under test (SuT) is the AddressResolver class, since it's the class we want to test the behavior of.
-
-The service to mock is the ISimpleHttpClient interface, since it's the interface responsible for making HTTP requests to the remote geocoding service,
-and we want to isolate the AddressResolver class from the remote service during testing.
