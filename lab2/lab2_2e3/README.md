@@ -1,4 +1,3 @@
-
 # Exercise 2: Geocoding
 This exercise involves creating an application to perform reverse geocoding and set up tests using JUnit and Mockito. The `AddressResolver` class is responsible for invoking a remote geocoding service to find a zip code for a given set of GPS coordinates. The exercise requires the implementation of unit tests to verify the behavior of `AddressResolver#findAddressForLocation`.
 
