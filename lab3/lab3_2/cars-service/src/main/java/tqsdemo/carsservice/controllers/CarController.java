@@ -1,10 +1,10 @@
-package me.carsservice.controllers;
+package tqsdemo.carsservice.controllers;
 
-import me.carsservice.entities.Car;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import me.carsservice.services.CarManagerService;
+import tqsdemo.carsservice.entities.Car;
+import tqsdemo.carsservice.services.CarManagerService;
 
 import java.net.URI;
 import java.util.List;

@@ -1,7 +1,6 @@
-package me.carsservice.entities;
+package tqsdemo.carsservice.entities;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity

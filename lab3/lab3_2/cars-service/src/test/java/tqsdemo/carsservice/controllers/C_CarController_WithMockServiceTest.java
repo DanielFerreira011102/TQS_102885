@@ -1,8 +1,5 @@
-package me.carsservice;
+package tqsdemo.carsservice.controllers;
 
-import me.carsservice.controllers.CarController;
-import me.carsservice.entities.Car;
-import me.carsservice.services.CarManagerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,6 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import tqsdemo.carsservice.JsonUtils;
+import tqsdemo.carsservice.entities.Car;
+import tqsdemo.carsservice.services.CarManagerService;
 
 import java.util.Arrays;
 import java.util.List;

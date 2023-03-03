@@ -1,9 +1,10 @@
-package me.carsservice.services;
+package tqsdemo.carsservice.services;
 
-import me.carsservice.entities.Car;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import me.carsservice.repositories.CarRepository;
+import tqsdemo.carsservice.entities.Car;
+import tqsdemo.carsservice.repositories.CarRepository;
+
 import java.util.List;
 
 @Service

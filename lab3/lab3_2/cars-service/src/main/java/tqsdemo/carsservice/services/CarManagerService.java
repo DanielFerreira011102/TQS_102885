@@ -1,7 +1,6 @@
-package me.carsservice.services;
+package tqsdemo.carsservice.services;
 
-import me.carsservice.entities.Car;
-
+import tqsdemo.carsservice.entities.Car;
 import java.util.List;
 
 public interface CarManagerService {

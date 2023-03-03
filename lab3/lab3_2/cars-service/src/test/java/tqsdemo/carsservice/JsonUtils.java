@@ -1,4 +1,4 @@
-package me.carsservice;
+package tqsdemo.carsservice;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
