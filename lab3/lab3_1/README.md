@@ -1,5 +1,6 @@
 # Exercise 1: Employee manager example
-In this exercise, we will implement and test the StocksPortfolio class, which holds a collection of stocks and calculates the total value of the portfolio based on the current condition of the stock market.
+
+This is an example of a simplified Employee management application developed using Spring Boot. The project is structured into several components such as `Employee`, `EmployeeRepository`, `EmployeeService`, and `EmployeeRestController`. The application also includes a set of tests.
 
 ## Review Questions
 
@@ -68,3 +69,10 @@ The main differences between the three test strategies (<b>C</b>, <b>D</b>, and 
 Note that both <b>D</b> and <b>E</b> load the full Spring Boot application, but <b>D</b> accesses the server context through a special testing servlet (`MockMvc` object), while <b>E</b> uses an API client (`TestRestTemplate`) to test the REST API.
 
 In short, the main differences between the three test strategies are the components being tested, the approach used to access the server context, and the tool used to make requests to the REST API.
+
+## Key Takeaways
+- Spring Boot provides a convenient way to structure your application into multiple components such as entities, repositories, services, and REST controllers.
+- JpaRepository provides a set of methods to perform common CRUD operations on the target entity. Custom queries can also be defined if needed.
+- `@Service` annotation indicates that a class is a service component that contains business logic related to the application.
+- `@RestController` annotation indicates that a class is a REST controller that handles HTTP requests and delegates them to appropriate service components.
+- AssertJ provides expressive methods chaining to write more readable and concise assertions in your test cases.
