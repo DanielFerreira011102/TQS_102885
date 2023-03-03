@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import tqsdemo.carsservice.entities.Car;
 import tqsdemo.carsservice.repositories.CarRepository;
@@ -31,9 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK, classes = CarsServiceApplication.class)
 @AutoConfigureMockMvc
-@AutoConfigureTestDatabase
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+
 // adapt AutoConfigureTestDatabase with TestPropertySource to use a real database
-// @TestPropertySource(locations = "application-integrationtest.properties")
+@TestPropertySource(locations = "classpath:application-integrationtest.properties")
 class D_EmployeeRestControllerIT {
 
     @Autowired
