@@ -5,8 +5,6 @@ import io.github.bonigarcia.seljup.SeleniumJupiter;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -20,7 +18,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 /*
- Sometimes it is not working because of cookie popup and elements become non-interactable.
+ Sometimes it does not work because of cookie popups and elements become non-interactable.
  How do we dismiss those popups when they appear?
  */
 @ExtendWith(SeleniumJupiter.class)
@@ -31,7 +29,7 @@ public class SeleniumSteps {
     @Given("I am on the Google search page")
     public void I_visit_google() {
 
-        // it was not working without these options...
+        // it was not working without these options... why?
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--remote-allow-origins=*","ignore-certificate-errors");
         WebDriverManager.chromedriver().setup();
@@ -53,10 +51,9 @@ public class SeleniumSteps {
     public void checkTitle(String titleStartsWith) {
         // Google's search is rendered dynamically with JavaScript
         // Wait for the page to load timeout after ten seconds
-        new WebDriverWait(driver, Duration.of(3, ChronoUnit.SECONDS)).until(new ExpectedCondition<Boolean>() {
-            public Boolean apply(WebDriver d) {
-                return d.getTitle().toLowerCase().startsWith(titleStartsWith);
-            }
+        new WebDriverWait(driver, Duration.of(3, ChronoUnit.SECONDS)).until((ExpectedCondition<Boolean>) d -> {
+            assert d != null;
+            return d.getTitle().toLowerCase().startsWith(titleStartsWith);
         });
     }
 
