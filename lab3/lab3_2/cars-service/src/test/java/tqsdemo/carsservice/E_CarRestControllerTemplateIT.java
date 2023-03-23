@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 // switch AutoConfigureTestDatabase with TestPropertySource to use a real database
 //@TestPropertySource(locations = "application-integrationtest.properties")
-class E_EmployeeRestControllerTemplateIT {
+class E_CarRestControllerTemplateIT {
 
     // will need to use the server port for the invocation url
     @LocalServerPort

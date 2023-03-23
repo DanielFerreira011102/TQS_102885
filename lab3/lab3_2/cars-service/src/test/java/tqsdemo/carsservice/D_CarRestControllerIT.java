@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase
 // adapt AutoConfigureTestDatabase with TestPropertySource to use a real database
 // @TestPropertySource(locations = "application-integrationtest.properties")
-class D_EmployeeRestControllerIT {
+class D_CarRestControllerIT {
 
     @Autowired
     private MockMvc mvc;
