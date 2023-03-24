@@ -24,3 +24,11 @@ To eliminate that technical debt, the code needs to be refactored by replacing t
 The `Uncovered Lines` metric shows that there are 4 lines that were not executed during the testing process. This means that the code paths associated with those lines were not tested and could potentially contain defects or bugs.
 
 The `Uncovered Conditions` metric indicates that 1 of the 2 total conditions was not executed during testing. This means that the conditional statement associated with that condition was not evaluated during testing and could potentially contain bugs or logic errors.
+
+## Image reports
+
+### Before code refactoring
+![Before code refactoring](failed.jpg "Before code refactoring")
+
+### After code refactoring
+![Before code refactoring](corrected.jpg "After code refactoring")
