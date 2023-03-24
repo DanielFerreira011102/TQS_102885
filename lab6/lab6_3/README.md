@@ -25,9 +25,9 @@ I tested it on my IES project of last year.
 
 - **Reliability Remediation Effort is greater than 3h:** We set this threshold because we believe that any issues with the code should be resolved immediately. Waiting longer than 3 hours to fix a reliability issue could cause the system to become unreliable and unpredictable.
 
-- **Security Rating is worse than A:** We chose A as the threshold because it represents a good level of security for the code. A lower rating could indicate that there are vulnerabilities in the code that hackers could exploit, putting the system and its users at risk.
+- **Security Rating is worse than A:** We chose A as the threshold because it represents a good level of security for the code. The code should be free of vulnerabilities that hackers could exploit, putting the system and its users at risk.
 
-- **Security Review Rating is worse than B:** We set this threshold a because we believe that thorough security review is essential to ensure the code is as secure as possible. A lower rating could indicate that the code hasn't been thoroughly checked for security issues.
+- **Security Review Rating is worse than B:** We set this threshold a because we believe that thorough security review is essential to ensure the code is as secure as possible.
 
 - **Critical Issues is greater than 10:** If the code has more than 10 critical issues, it could indicate that the system is at risk of serious problems or security breaches.
 
