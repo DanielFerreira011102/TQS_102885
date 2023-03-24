@@ -4,6 +4,8 @@
 
 ### a) Define a custom quality gate to this project. Feel free to mix the metrics but explain your chosen configuration.
 
+I tested it on my IES project of last year.
+
 | Condition | Threshold |
 |-----------|-----------|
 | Maintainability Rating | < A |
