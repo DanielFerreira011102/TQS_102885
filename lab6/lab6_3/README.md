@@ -25,7 +25,7 @@ I tested it on my IES project of last year.
 
 - **Reliability Remediation Effort is greater than 3h:** We set this threshold because we believe that any issues with the code should be resolved immediately.
 
-- **Security Rating is worse than A:** The code should be free of vulnerabilities that hackers can exploit, putting the system and its users at risk.
+- **Security Rating is worse than A:** The code should be free of vulnerabilities that hackers could exploit, putting the system and its users at risk.
 
 - **Security Review Rating is worse than B:** A thorough security review is essential to ensure the code is as secure as possible.
 
