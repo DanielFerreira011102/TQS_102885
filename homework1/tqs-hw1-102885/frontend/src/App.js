@@ -1,35 +1,33 @@
 import logo from './logo.svg';
 import './App.css';
-import {useEffect, useState} from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Search, Result, Cache } from "./components"
+import { AiOutlineFileSearch, AiOutlineDatabase } from "react-icons/ai";
 
 function App() {
-    const [clients, setClients] = useState(null);
+  return (
+    <div className='root__wrapper'>
+        <Router>
+        <div className='main__wrapper'>
+            <nav className='navbar__wrapper'>
+                <ul>
+                    <li>
+                        <Link to="/"><AiOutlineFileSearch color='#fff' fontSize={48}/></Link>
+                    </li>
+                    <li>
+                        <Link to="/cache"><AiOutlineDatabase color='#fff' fontSize={48}/></Link>
+                    </li>
+                </ul>
+            </nav>
 
-    useEffect(() => {
-        fetch('/clients')
-            .then((response) => response.json())
-            .then((data) => {console.log(data);setClients(data);});
-    }, []);
-
-    return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <div className="App-intro">
-                    <h2>Clients</h2>
-                    {clients ? (
-                        clients.map((client) => (
-                            <div key={client.id}>
-                                {client.name} ({client.email})
-                            </div>
-                        ))
-                    ) : (
-                        <div>Loading clients...</div>
-                    )}
-                </div>
-            </header>
+            <Routes>
+            <Route path="/" element={<Search />} />
+            <Route path="/:query" element={<Result />} />
+            <Route path="/cache" element={<Cache />} />
+            </Routes>
         </div>
-    );
+        </Router>
+    </div>
+  );
 }
-
 export default App;

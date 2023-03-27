@@ -3,7 +3,7 @@ package pt.ua.tqsenv.cache;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import pt.ua.tqsenv.domain.AirQualityData;
+import pt.ua.tqsenv.entities.AirQualityData;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -19,15 +19,17 @@ public class AirQualityCache {
     @Value("${cache.ttl.seconds}")
     private int cacheTTLSeconds;
 
-    public AirQualityData get(String city) {
+    public AirQualityData get(String location, String date, Boolean current, Integer days, Boolean hours) {
         requestsCount++;
 
-        CachedAirQualityData cachedData = cache.get(city);
+        String key = getKey(location, date, current, days, hours);
+
+        CachedAirQualityData cachedData = cache.get(key);
 
         if (cachedData == null || cachedData.isExpired()) {
 
             if (cachedData != null) {
-                cache.remove(city);
+                cache.remove(key);
             }
 
             cacheMisses++;
@@ -38,14 +40,17 @@ public class AirQualityCache {
         return cachedData.getData();
     }
 
-    public void put(String city, AirQualityData data) {
-        CachedAirQualityData cachedData = cache.get(city);
+    public void put(AirQualityData data, String location, String date, Boolean current, Integer days, Boolean hours) {
+        String key = getKey(location, date, current, days, hours);
+
+        CachedAirQualityData cachedData = cache.get(key);
+
         if (cachedData != null) {
             cachedData.setTTL(Duration.ofSeconds(cacheTTLSeconds));
         }
         else {
             cachedData = new CachedAirQualityData(data, Duration.ofSeconds(cacheTTLSeconds));
-            cache.put(city, cachedData);
+            cache.put(key, cachedData);
         }
     }
 
@@ -57,8 +62,32 @@ public class AirQualityCache {
         return stats;
     }
 
-    public Map<String, CachedAirQualityData> getCache() {
-        return cache;
+    public String getKey(String location, String date, Boolean current, Integer days, Boolean hours) {
+        String key = location;
+
+        if (date != null)
+            key += "_" + date;
+        else if (days != null)
+            key += "_" + days;
+
+        if (current != null)
+            key += "_c" + current;
+
+        if (hours != null)
+            key += "_h" + hours;
+
+        return key;
+    }
+
+    @Override
+    public String toString() {
+        return "AirQualityCache{" +
+                "cache=" + cache +
+                ", requestsCount=" + requestsCount +
+                ", cacheHits=" + cacheHits +
+                ", cacheMisses=" + cacheMisses +
+                ", cacheTTLSeconds=" + cacheTTLSeconds +
+                '}';
     }
 
     @Scheduled(fixedRateString = "${cache.ttl.seconds}") // Run every minute

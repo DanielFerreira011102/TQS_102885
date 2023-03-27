@@ -1,0 +1,164 @@
+/* Base styles */
+h1,
+h2,
+h3,
+h4 {
+	color: white;
+	font-weight: 100;
+	line-height: 1.1;
+	letter-spacing: 0.025em;
+	margin: 0; padding: 0;
+}
+
+.btn {
+	color: white;
+	opacity: 0.3;
+	cursor: pointer;
+}
+
+.btn:hover {
+	opacity: 0.32;
+}
+
+.btn.active {
+    opacity: 1;
+}
+
+.panel {
+	width: 760px;
+	display: inline-block;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+}
+
+.weather {
+	width: 100%;
+	margin-top: 20px;
+	display: inline-block;
+}
+
+.city {
+	text-align: left;
+	border-bottom: solid thin white;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.group {
+	margin-bottom: 20px;
+	text-align: right;
+	float: right;
+	clear: both;
+}
+
+.aq {
+	font-size: 4.5em;
+	font-weight: 300;
+	line-height: 0.75;
+}
+
+.defra, .epa, .divider {
+	font-size: 1.75rem;
+	vertical-align: super;
+}
+
+.condition {
+	vertical-align: top;
+	padding-right: 5px;
+}
+
+.divider {
+	margin: 0 0.05em;
+}
+
+.forecast {
+	display: table;
+	text-transform: uppercase;
+	width: 100%;
+}
+
+.block {
+	display: table-cell;
+	padding: 1.5em 0 0 0;
+	text-align: center;
+}
+
+.high {
+    font-weight: 400;
+    margin: 0.25em 0;
+}
+
+.secondary {
+    opacity: 0.7;
+}
+
+.grid {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin: 30px 0;
+}
+
+.cell {
+	text-align: left;
+	margin-bottom: 10px;
+}
+
+.cell .label {
+	opacity: 1;
+}
+
+.cell .value {
+	opacity: .8;
+}
+
+.highlights {
+	display: grid;
+	gap: 5px;
+}
+
+.loader {
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	from {
+	  transform: rotate(0deg);
+	}
+	to {
+	  transform: rotate(360deg);
+	}
+}
+
+/* Media queries */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.column {
+		margin-bottom: 15px;
+		width: 50%;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.group.highlights {
+		width: 60%;
+	}
+	.panel {
+		width: 100%;
+	}
+	.header {
+		padding: 15px;
+	}
+	.column {
+		padding: 15px;
+	}
+}
+
+@media only screen and (max-width: 439px) {
+	.group.highlights {
+		width: 40%;
+	}
+}
