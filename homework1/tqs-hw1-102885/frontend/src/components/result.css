@@ -24,7 +24,7 @@ h4 {
     opacity: 1;
 }
 
-.panel {
+.panel__results {
 	width: 760px;
 	display: inline-block;
 }
@@ -146,7 +146,7 @@ h4 {
 	.group.highlights {
 		width: 60%;
 	}
-	.panel {
+	.panel__results {
 		width: 100%;
 	}
 	.header {

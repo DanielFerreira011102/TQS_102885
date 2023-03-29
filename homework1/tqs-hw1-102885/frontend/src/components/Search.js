@@ -16,7 +16,7 @@ function Search() {
     return (
       <div className="search__wrapper">
         <form onSubmit={handleSubmit}>
-            <input autoFocus id="search" class="search__input" name="search" type="text" value={query} placeholder="Search" onChange={handleChange} />
+            <input autoFocus id="search" className="search__input" name="search" type="text" value={query} placeholder="Search" onChange={handleChange} />
         </form>
       </div>
     );

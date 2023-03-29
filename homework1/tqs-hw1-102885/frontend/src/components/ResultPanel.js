@@ -3,31 +3,33 @@ import {US_EPA_MAP, GB_DEFRA_MAP} from "../constants"
 import DataCell from "./DataCell";
 import { WiDaySunny, WiDaySunnyOvercast, WiNightClear, WiNightPartlyCloudy, WiCloudy, WiShowers, WiRain, WiThunderstorm, WiSnow, WiFog } from 'weather-icons-react';
 
+const ICON_COLOR = '#fff'
+
 function getWeatherIcon(condition, isDay) {
   switch(condition) {
     case 'Sunny':
     case 'Clear':
-      return isDay ? <WiDaySunny className="condition" size={64} color='#fff' /> : <WiNightClear className="condition" size={64} color='#fff' />;
+      return isDay ? <WiDaySunny className="condition" size={64} color="#fff" /> : <WiNightClear className="condition" size={64} color="#fff" />;
     case 'Partly cloudy':
-      return isDay ? <WiDaySunnyOvercast className="condition" size={64} color='#fff' /> : <WiNightPartlyCloudy className="condition" size={64} color='#fff' />;
+      return isDay ? <WiDaySunnyOvercast className="condition" size={64} color="#fff" /> : <WiNightPartlyCloudy className="condition" size={64} color="#fff" />;
     case 'Cloudy':
     case 'Overcast':
-      return <WiCloudy className="condition" size={64} color='#fff' />;
+      return <WiCloudy className="condition" size={64} color="#fff" />;
     case 'Mist':
     case 'Fog':
     case 'Freezing fog':
-      return <WiFog className="condition" size={64} color='#fff' />;
+      return <WiFog className="condition" size={64} color="#fff" />;
     case 'Patchy rain possible':
     case 'Light rain':
     case 'Light freezing rain':
     case 'Patchy light rain':
     case 'Patchy light drizzle':
-      return <WiRain className="condition" size={64} color='#fff' />;
+      return <WiRain className="condition" size={64} color="#fff" />;
     case 'Moderate rain at times':
     case 'Moderate rain':
     case 'Heavy rain at times':
     case 'Heavy rain':
-      return <WiShowers className="condition" size={64} color='#fff' />;
+      return <WiShowers className="condition" size={64} color="#fff" />;
     case 'Patchy snow possible':
     case 'Patchy sleet possible':
     case 'Patchy freezing drizzle possible':
@@ -37,11 +39,11 @@ function getWeatherIcon(condition, isDay) {
     case 'Moderate or heavy snow':
     case 'Patchy heavy snow':
     case 'Heavy snow':
-      return <WiSnow className="condition" size={64} color='#fff' />;
+      return <WiSnow className="condition" size={64} color="#fff" />;
     case 'Thundery outbreaks possible':
     case 'Moderate or heavy showers of ice pellets':
     case 'Moderate or heavy rain with thunder':
-      return <WiThunderstorm className="condition" size={64} color='#fff' />;
+      return <WiThunderstorm className="condition" size={64} color="#fff" />;
     case 'Patchy sleet showers':
     case 'Patchy light snow':
     case 'Light snow':
@@ -49,11 +51,11 @@ function getWeatherIcon(condition, isDay) {
     case 'Patchy light rain with thunder':
     case 'Light sleet showers':
     case 'Light snow showers':
-      return isDay ? <WiDaySunny className="condition" size={64} color='#fff' /> : <WiNightClear className="condition" size={64} color='#fff' />;
+      return isDay ? <WiDaySunny className="condition" size={64} color="#fff" /> : <WiNightClear className="condition" size={64} color="#fff" />;
     case 'Torrential rain shower':
     case 'Light rain shower':
     case 'Moderate or heavy rain shower':
-      return <WiShowers className="condition" size={64} color='#fff' />;
+      return <WiShowers className="condition" size={64} color="#fff" />;
     default:
       return null;
   }
@@ -63,7 +65,7 @@ function ResultPanel({weatherData}) {
     const [aqIndex, setAqIndex] = useState('epa');
 
     return (
-        <div className="panel">
+        <div className="panel__results">
             <h2 className="city" id="city">{weatherData.name}, {weatherData.country}</h2>
             <div className="weather" id="weather">
                 <div className="header">

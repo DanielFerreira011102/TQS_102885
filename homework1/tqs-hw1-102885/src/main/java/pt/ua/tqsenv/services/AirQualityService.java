@@ -18,17 +18,16 @@ import java.util.List;
 
 @Service
 public class AirQualityService {
-
+    @Value("${weather.api.url}")
+    private String weatherApiUrl;
+    @Value("${weather.api.key}")
+    private String weatherApiKey;
     private final RestTemplate restTemplate;
-    private final String weatherApiUrl;
-    private final String weatherApiKey;
     private final ObjectMapper objectMapper;
     private final AirQualityCache cache;
 
-    public AirQualityService(RestTemplate restTemplate, ObjectMapper objectMapper, AirQualityCache cache, @Value("${weather.api.url}") String weatherApiUrl, @Value("${weather.api.key}") String weatherApiKey) {
+    public AirQualityService(RestTemplate restTemplate, ObjectMapper objectMapper, AirQualityCache cache) {
         this.restTemplate = restTemplate;
-        this.weatherApiUrl = weatherApiUrl;
-        this.weatherApiKey = weatherApiKey;
         this.objectMapper = objectMapper;
         this.cache = cache;
     }
@@ -59,9 +58,13 @@ public class AirQualityService {
         return fetchedData;
     }
 
+    public CacheAnalyticsData getCacheAnalyticsData() {
+        return cache.getStats();
+    }
+
     private CurrentAirQualityData fetchCurrentAirQualityData(String location) throws AirQualityServiceException {
         // Create the API endpoint URL
-        String apiUrl = weatherApiUrl + "current.json?key=" + weatherApiKey + "&q=" + location + "&aqi=yes";
+        String apiUrl = String.format("%s/current.json?key=%s&q=%s&aqi=yes", weatherApiUrl, weatherApiKey, location);
 
         try {
             // Make the API request
@@ -73,23 +76,22 @@ public class AirQualityService {
                 JsonNode rootNode = objectMapper.readTree(responseEntity.getBody());
 
                 // Extract the required data from the JSON response
-                JsonNode locationNode = rootNode.get("location");
-                JsonNode currentAirQualityNode = rootNode.path("current").path("air_quality");
-                JsonNode lastUpdatedEpochNode = rootNode.path("current").path("last_updated_epoch");
-                JsonNode lastUpdatedNode = rootNode.path("current").path("last_updated");
-                JsonNode conditionNode = rootNode.path("current").path("condition").path("text");
-                JsonNode isDayNode = rootNode.path("current").path("is_day");
+                JsonNode locationNode = rootNode.at("/location");
+                JsonNode currentAirQualityNode = rootNode.at("/current/air_quality");
+                JsonNode lastUpdatedEpochNode = rootNode.at("/current/last_updated_epoch");
+                JsonNode lastUpdatedNode = rootNode.at("/current/last_updated");
+                JsonNode conditionNode = rootNode.at("/current/condition/text");
+                JsonNode isDayNode = rootNode.at("/current/is_day");
 
                 // Create a new CurrentAirQualityData object with the extracted data
-                CurrentAirQualityData currentAirQualityData = new CurrentAirQualityData();
-                currentAirQualityData.setLocation(objectMapper.treeToValue(locationNode, WeatherLocation.class));
-                currentAirQualityData.setAirQuality(objectMapper.treeToValue(currentAirQualityNode, WeatherAirQuality.class));
-                currentAirQualityData.setCondition(conditionNode.asText());
-                currentAirQualityData.setLastUpdatedEpoch(lastUpdatedEpochNode.asLong());
-                currentAirQualityData.setLastUpdated(lastUpdatedNode.asText());
-                currentAirQualityData.setIsDay(isDayNode.asBoolean());
 
-                return currentAirQualityData;
+                return CurrentAirQualityData.builder()
+                        .location(objectMapper.treeToValue(locationNode, WeatherLocation.class))
+                        .airQuality(objectMapper.treeToValue(currentAirQualityNode, WeatherAirQuality.class))
+                        .condition(conditionNode.asText())
+                        .lastUpdatedEpoch(lastUpdatedEpochNode.asLong())
+                        .lastUpdated(lastUpdatedNode.asText())
+                        .isDay(isDayNode.asBoolean()).build();
             }
 
             // Throw an exception if the API request was not successful
@@ -105,9 +107,11 @@ public class AirQualityService {
 
     private ForecastAirQualityData fetchForecastAirQualityData(String location, String date, Boolean includeCurrent, Integer forecastDays, Boolean includeHours) throws AirQualityServiceException {
         // Create the API endpoint URL
-        String apiUrl =
-                weatherApiUrl + "forecast.json?key=" + weatherApiKey + "&q=" + location + "&aqi=yes"
-                + "&alerts=no" + (date != null? "&dt=" + date : "&days=" + forecastDays);
+        String apiUrl = String.format("%sforecast.json?key=%s&q=%s&aqi=yes&alerts=no%s",
+                weatherApiUrl,
+                weatherApiKey,
+                location,
+                date != null ? "&dt=" + date : "&days=" + forecastDays);
 
         try {
             // Make the API request
@@ -119,17 +123,19 @@ public class AirQualityService {
                 JsonNode rootNode = objectMapper.readTree(responseEntity.getBody());
 
                 // Extract the required data from the JSON response
-                JsonNode locationNode = rootNode.get("location");
+                JsonNode locationNode = rootNode.at("/location");
 
                 // Create a new ForecastAirQualityData object with the extracted data
                 ForecastAirQualityData forecastAirQualityData = new ForecastAirQualityData();
                 forecastAirQualityData.setLocation(objectMapper.treeToValue(locationNode, WeatherLocation.class));
 
                 if (date != null) {
-                    JsonNode forecastAirQualityNode = rootNode.path("forecast").path("forecastday").get(0).path("day").path("air_quality");
-                    JsonNode conditionNode = rootNode.path("forecast").path("forecastday").get(0).path("day").path("condition").path("text");
-                    JsonNode dateEpochNode = rootNode.path("forecast").path("forecastday").get(0).path("date_epoch");
-                    JsonNode dateNode = rootNode.path("forecast").path("forecastday").get(0).path("date");
+                    JsonNode forecastAirQualityNode = rootNode.at("/forecast/forecastday/0/day/air_quality");
+                    JsonNode conditionNode = rootNode.at("/forecast/forecastday/0/day/condition/text");
+                    JsonNode dateEpochNode = rootNode.at("/forecast/forecastday/0/date_epoch");
+                    JsonNode dateNode = rootNode.at("/forecast/forecastday/0/date");
+
+
                     forecastAirQualityData.setAirQuality(objectMapper.treeToValue(forecastAirQualityNode, WeatherAirQuality.class));
                     forecastAirQualityData.setCondition(conditionNode.asText());
                     forecastAirQualityData.setDateEpoch(dateEpochNode.asLong());
@@ -138,21 +144,21 @@ public class AirQualityService {
                     if (includeHours) {
                         List<HourAirQualityData> hoursAirQualityData = new ArrayList<>();
 
-                        JsonNode hourNodes = rootNode.path("forecast").path("forecastday").get(0).path("hour");
+                        JsonNode hourNodes = rootNode.at("/forecast/forecastday/0/hour");
 
                         for (JsonNode hour : hourNodes) {
-                            JsonNode hourTimeEpoch = hour.path("time_epoch");
-                            JsonNode hourTime = hour.path("time");
-                            JsonNode hourDayNode = hour.path("is_day");
-                            JsonNode hourConditionNode = hour.path("condition").path("text");
-                            JsonNode hourAirQualityNode = hour.path("air_quality");
+                            JsonNode hourTimeEpoch = hour.at("/time_epoch");
+                            JsonNode hourTime = hour.at("/time");
+                            JsonNode hourDayNode = hour.at("/is_day");
+                            JsonNode hourConditionNode = hour.at("/condition/text");
+                            JsonNode hourAirQualityNode = hour.at("/air_quality");
 
-                            HourAirQualityData hourAirQualityData = new HourAirQualityData();
-                            hourAirQualityData.setAirQuality(objectMapper.treeToValue(hourAirQualityNode, WeatherAirQuality.class));
-                            hourAirQualityData.setTimeEpoch(hourTimeEpoch.asLong());
-                            hourAirQualityData.setTime(hourTime.asText());
-                            hourAirQualityData.setCondition(hourConditionNode.asText());
-                            hourAirQualityData.setIsDay(hourDayNode.asBoolean());
+                            HourAirQualityData hourAirQualityData = HourAirQualityData.builder()
+                                .airQuality(objectMapper.treeToValue(hourAirQualityNode, WeatherAirQuality.class))
+                                .timeEpoch(hourTimeEpoch.asLong())
+                                .time(hourTime.asText())
+                                .condition(hourConditionNode.asText())
+                                .isDay(hourDayNode.asBoolean()).build();
 
                             hoursAirQualityData.add(hourAirQualityData);
                         }
@@ -164,38 +170,38 @@ public class AirQualityService {
                 else {
                     List<ForecastAirQualityData> daysAirQualityData = new ArrayList<>();
 
-                    JsonNode dayNodes = rootNode.path("forecast").path("forecastday");
+                    JsonNode dayNodes = rootNode.at("/forecast/forecastday");
 
                     for (JsonNode day : dayNodes) {
-                        ForecastAirQualityData dayForecastAirQualityData = new ForecastAirQualityData();
-                        JsonNode dayDateEpochNode = day.path("date_epoch");
-                        JsonNode dayDateNode = day.path("date");
-                        JsonNode dayConditionNode = day.path("day").path("condition").path("text");
-                        JsonNode dayAirQualityNode = day.path("day").path("air_quality");
+                        JsonNode dayDateEpochNode = day.at("/date_epoch");
+                        JsonNode dayDateNode = day.at("/date");
+                        JsonNode dayConditionNode = day.at("/day/condition/text");
+                        JsonNode dayAirQualityNode = day.at("/day/air_quality");
 
-                        dayForecastAirQualityData.setDateEpoch(dayDateEpochNode.asLong());
-                        dayForecastAirQualityData.setDate(dayDateNode.asText());
-                        dayForecastAirQualityData.setCondition(dayConditionNode.asText());
-                        dayForecastAirQualityData.setAirQuality(objectMapper.treeToValue(dayAirQualityNode, WeatherAirQuality.class));
+                        ForecastAirQualityData dayForecastAirQualityData = ForecastAirQualityData.builder()
+                            .dateEpoch(dayDateEpochNode.asLong())
+                            .date(dayDateNode.asText())
+                            .condition(dayConditionNode.asText())
+                            .airQuality(objectMapper.treeToValue(dayAirQualityNode, WeatherAirQuality.class)).build();
 
                         if (includeHours) {
                             List<HourAirQualityData> hoursAirQualityData = new ArrayList<>();
 
-                            JsonNode hourNodes = day.path("hour");
+                            JsonNode hourNodes = day.at("/hour");
 
                             for (JsonNode hour : hourNodes) {
-                                JsonNode hourTimeEpoch = hour.path("time_epoch");
-                                JsonNode hourTime = hour.path("time");
-                                JsonNode hourDayNode = hour.path("is_day");
-                                JsonNode hourConditionNode = hour.path("condition").path("text");
-                                JsonNode hourAirQualityNode = hour.path("air_quality");
+                                JsonNode hourTimeEpoch = hour.at("/time_epoch");
+                                JsonNode hourTime = hour.at("/time");
+                                JsonNode hourDayNode = hour.at("/is_day");
+                                JsonNode hourConditionNode = hour.at("/condition/text");
+                                JsonNode hourAirQualityNode = hour.at("/air_quality");
 
-                                HourAirQualityData hourAirQualityData = new HourAirQualityData();
-                                hourAirQualityData.setAirQuality(objectMapper.treeToValue(hourAirQualityNode, WeatherAirQuality.class));
-                                hourAirQualityData.setTimeEpoch(hourTimeEpoch.asLong());
-                                hourAirQualityData.setTime(hourTime.asText());
-                                hourAirQualityData.setCondition(hourConditionNode.asText());
-                                hourAirQualityData.setIsDay(hourDayNode.asBoolean());
+                                HourAirQualityData hourAirQualityData = HourAirQualityData.builder()
+                                        .airQuality(objectMapper.treeToValue(hourAirQualityNode, WeatherAirQuality.class))
+                                        .timeEpoch(hourTimeEpoch.asLong())
+                                        .time(hourTime.asText())
+                                        .condition(hourConditionNode.asText())
+                                        .isDay(hourDayNode.asBoolean()).build();
 
                                 hoursAirQualityData.add(hourAirQualityData);
                             }
@@ -210,18 +216,18 @@ public class AirQualityService {
                 }
 
                 if (includeCurrent) {
-                    JsonNode currentAirQualityNode = rootNode.path("current").path("air_quality");
-                    JsonNode currentLastUpdatedEpochNode = rootNode.path("current").path("last_updated_epoch");
-                    JsonNode currentLastUpdatedNode = rootNode.path("current").path("last_updated");
-                    JsonNode currentConditionNode = rootNode.path("current").path("condition").path("text");
-                    JsonNode currentIsDayNode = rootNode.path("current").path("is_day");
+                    JsonNode currentAirQualityNode = rootNode.at("/current/air_quality");
+                    JsonNode currentLastUpdatedEpochNode = rootNode.at("/current/last_updated_epoch");
+                    JsonNode currentLastUpdatedNode = rootNode.at("/current/last_updated");
+                    JsonNode currentConditionNode = rootNode.at("/current/condition/text");
+                    JsonNode currentIsDayNode = rootNode.at("/current/is_day");
 
-                    CurrentAirQualityData currentAirQualityData = new CurrentAirQualityData();
-                    currentAirQualityData.setAirQuality(objectMapper.treeToValue(currentAirQualityNode, WeatherAirQuality.class));
-                    currentAirQualityData.setCondition(currentConditionNode.asText());
-                    currentAirQualityData.setLastUpdatedEpoch(currentLastUpdatedEpochNode.asLong());
-                    currentAirQualityData.setLastUpdated(currentLastUpdatedNode.asText());
-                    currentAirQualityData.setIsDay(currentIsDayNode.asBoolean());
+                    CurrentAirQualityData currentAirQualityData = CurrentAirQualityData.builder()
+                        .airQuality(objectMapper.treeToValue(currentAirQualityNode, WeatherAirQuality.class))
+                        .condition(currentConditionNode.asText())
+                        .lastUpdatedEpoch(currentLastUpdatedEpochNode.asLong())
+                        .lastUpdated(currentLastUpdatedNode.asText())
+                        .isDay(currentIsDayNode.asBoolean()).build();
 
                     forecastAirQualityData.setCurrentAirQualityData(currentAirQualityData);
                 }

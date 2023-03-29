@@ -1,20 +1,43 @@
 import React, { useState, useEffect } from "react"
+import CachePanel from "./CachePanel";
+import ErrorPanel from "./ErrorPanel";
+import LoadingPanel from "./LoadingPanel";
+import './cache.css'
 
-function Result() {
-  
-    const [clients, setClients] = useState(null);
+function Cache() {
+  const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState(false);
+  const [cacheData, setCacheData] = useState(null);
+  const API_URL = '/api/v1/cache';
 
-    useEffect(() => {
-        fetch('/clients')
-            .then((response) => response.json())
-            .then((data) => {console.log(data);setClients(data);});
-    }, []);
+  useEffect(() => {
+      fetch(API_URL)
+          .then((response) => response.json())
+          .then((data) => {
+            setCacheData(data)
+            setSuccess(true);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error(error);
+            setSuccess(false);
+            setLoading(false);
+          });
+  }, [API_URL]);
 
-    return (
-      <div>
-        <h1>Cache!</h1>
-      </div>
-    );
+  return (
+    loading?
+    <LoadingPanel />
+    :
+    success? 
+      (
+        <CachePanel cacheData={cacheData} />
+      )
+      :
+      (
+        <div></div>
+      )
+  );
 }
 
-export default Result;
+export default Cache;
