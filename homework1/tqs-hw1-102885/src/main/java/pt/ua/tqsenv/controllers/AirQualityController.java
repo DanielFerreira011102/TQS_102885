@@ -27,7 +27,6 @@ public class AirQualityController {
 
     @GetMapping("/forecast")
     public ResponseEntity<AirQualityData> getForecastAirQualityData(@RequestParam(name = "location") String location, @RequestParam(name = "date", required = false) String date, @RequestParam(name = "current", defaultValue = "false") Boolean current, @RequestParam(name = "days", defaultValue = "1") Integer days, @RequestParam(name = "hours", defaultValue = "false") Boolean hours) throws AirQualityServiceException {
-        System.out.println("HELLO1");
         ForecastAirQualityData forecastAirQualityData = airQualityService.getForecastAirQualityData(location, date, current, days, hours);
         return forecastAirQualityData != null ? ResponseEntity.ok(forecastAirQualityData) : ResponseEntity.notFound().build();
     }
