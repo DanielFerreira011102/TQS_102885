@@ -1,4 +1,3 @@
-
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Search, Result, Cache } from "./components"
@@ -21,9 +20,9 @@ function App() {
             </nav>
 
             <Routes>
-            <Route path="/" element={<Search />} />
-            <Route path="/:query" element={<Result />} />
-            <Route path="/cache" element={<Cache />} />
+                <Route path="/" element={<Search />} />
+                <Route path="/:query" element={<Result />} />
+                <Route path="/cache" element={<Cache />} />
             </Routes>
         </div>
         </Router>

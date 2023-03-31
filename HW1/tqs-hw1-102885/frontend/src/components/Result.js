@@ -82,7 +82,7 @@ function Result() {
           )
           :
           (
-            <ErrorPanel query={query} error={error} />
+            <ErrorPanel error={error} />
           )
     );
 }
