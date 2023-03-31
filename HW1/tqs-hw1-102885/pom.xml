@@ -173,43 +173,22 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>install node</id>
+                        <id>npm install</id>
                         <goals>
-                            <goal>install-node-and-yarn</goal>
+                            <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
                             <nodeVersion>${node.version}</nodeVersion>
-                            <yarnVersion>${yarn.version}</yarnVersion>
+                            <npmVersion>${npm.version}</npmVersion>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>yarn install</id>
+                        <id>npm run build</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>npm</goal>
                         </goals>
-                        <phase>generate-resources</phase>
-                    </execution>
-                    <execution>
-                        <id>yarn test</id>
-                        <goals>
-                            <goal>yarn</goal>
-                        </goals>
-                        <phase>test</phase>
                         <configuration>
-                            <arguments>test</arguments>
-                            <environmentVariables>
-                                <CI>true</CI>
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>yarn build</id>
-                        <goals>
-                            <goal>yarn</goal>
-                        </goals>
-                        <phase>compile</phase>
-                        <configuration>
-                            <arguments>build</arguments>
+                            <arguments>run build</arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -245,9 +224,8 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
         <node.version>v14.18.0</node.version>
-        <yarn.version>v1.12.1</yarn.version>
+        <npm.version>6.14.18</npm.version>
         <spring-boot.version>3.0.4</spring-boot.version>
-        <javafaker.version>1.0.2</javafaker.version>
         <lombok.version>1.18.26</lombok.version>
         <slf4j.version>2.0.6</slf4j.version>
         <logback.version>1.4.6</logback.version>
