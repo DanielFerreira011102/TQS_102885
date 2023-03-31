@@ -1,4 +1,4 @@
-package pt.ua.tqsenv.integration;
+package pt.ua.tqsenv.controllers;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.*;
