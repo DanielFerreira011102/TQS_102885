@@ -1,4 +1,4 @@
-package pt.ua.tqsenv.controllers;
+package pt.ua.tqsenv.integration;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.*;
