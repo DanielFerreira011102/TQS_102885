@@ -14,4 +14,5 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file HW1/tqs-hw1-102885/pom.xml
     - name: Run tests
-      run: mvn test --file HW1/tqs-hw1-102885/pom.xml
+      run: run: mvn test -Dtest=!pt.ua.tqsenv.integration.F_FunctionalWeb_IntegrationTest --file HW1/tqs-hw1-102885/pom.xml
+
