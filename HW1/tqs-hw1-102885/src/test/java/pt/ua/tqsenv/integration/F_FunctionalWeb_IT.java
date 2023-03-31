@@ -16,7 +16,7 @@ import pt.ua.tqsenv.integration.pages.SearchPage;
 import java.time.Duration;
 
 @SpringBootTest
-public class F_FunctionalWeb_IntegrationTest {
+public class F_FunctionalWeb_IT {
   private ChromeDriver driver;
   private SearchPage searchPage;
   private ResultsPage resultsPage;

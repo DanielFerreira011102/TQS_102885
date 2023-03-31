@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = AirQualityApplication.class)
 @AutoConfigureMockMvc
-public class D_AirQualityRestController_IntegrationTest {
+public class D_AirQualityRestController_IT {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
