@@ -11,8 +11,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AirQualityData {
     private WeatherLocation location;
