@@ -1,6 +1,9 @@
 package pt.ua.games;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -10,10 +13,14 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pt.ua.games.domain.Game;
 import pt.ua.games.repositories.GameRepository;
-import java.util.Arrays;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class GamesApplicationTests {
 
 	@Container
@@ -48,4 +55,46 @@ class GamesApplicationTests {
 		}
 	}
 
+	@Test
+	@Order(1)
+	public void testCreateGame() {
+		Game game = new Game();
+		game.setTitle("Minecraft");
+		game.setReleaseYear(2011);
+		game.setRating(9);
+		gameRepository.save(game);
+
+		Optional<Game> optionalGame = gameRepository.findById(game.getId());
+		assertThat(optionalGame).isPresent().hasValueSatisfying(gameInDb -> {assertThat(gameInDb.getTitle()).isEqualTo(game.getTitle());
+			assertThat(gameInDb.getReleaseYear()).isEqualTo(game.getReleaseYear());
+			assertThat(gameInDb.getRating()).isEqualTo(game.getRating());
+		});
+	}
+
+	@Test
+	@Order(2)
+	public void testUpdateGame() {
+		Optional<Game> optionalGame = gameRepository.findByTitle("Minecraft");
+
+		assertThat(optionalGame).isPresent();
+		Game game = optionalGame.get();
+		game.setRating(7);
+		gameRepository.save(game);
+
+		Optional<Game> optionalGameUpdated = gameRepository.findById(game.getId());
+		assertThat(optionalGameUpdated).isPresent().hasValueSatisfying(gameInDb -> assertThat(gameInDb.getRating()).isEqualTo(7));
+	}
+
+	@Test
+	@Order(3)
+	public void testDeleteGame() {
+		Optional<Game> optionalGame = gameRepository.findByTitle("Minecraft");
+
+		assertThat(optionalGame).isPresent();
+		Game game = optionalGame.get();
+		gameRepository.delete(game);
+
+		Optional<Game> optionalGameDeleted = gameRepository.findById(game.getId());
+		assertThat(optionalGameDeleted).isNotPresent();
+	}
 }
