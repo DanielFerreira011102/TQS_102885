@@ -71,9 +71,9 @@ public class B_AirQualityService_UnitTest {
         CacheAnalyticsData stats = airQualityService.getCacheAnalyticsData();
 
         assertThat(stats.getRequestsCount()).isEqualTo(1);
-        assertThat(stats.getCacheHits()).isEqualTo(0);
+        assertThat(stats.getCacheHits()).isZero();
         assertThat(stats.getCacheMisses()).isEqualTo(1);
-        assertThat(stats.getExpiredCount()).isEqualTo(0);
+        assertThat(stats.getExpiredCount()).isZero();
     }
 
     @Test
@@ -105,9 +105,9 @@ public class B_AirQualityService_UnitTest {
         CacheAnalyticsData stats = airQualityService.getCacheAnalyticsData();
 
         assertThat(stats.getRequestsCount()).isEqualTo(1);
-        assertThat(stats.getCacheHits()).isEqualTo(0);
+        assertThat(stats.getCacheHits()).isZero();
         assertThat(stats.getCacheMisses()).isEqualTo(1);
-        assertThat(stats.getExpiredCount()).isEqualTo(0);
+        assertThat(stats.getExpiredCount()).isZero();
     }
 
     @Test
@@ -172,9 +172,9 @@ public class B_AirQualityService_UnitTest {
         CacheAnalyticsData stats = airQualityService.getCacheAnalyticsData();
 
         assertThat(stats.getRequestsCount()).isEqualTo(1);
-        assertThat(stats.getCacheHits()).isEqualTo(0);
+        assertThat(stats.getCacheHits()).isZero();
         assertThat(stats.getCacheMisses()).isEqualTo(1);
-        assertThat(stats.getExpiredCount()).isEqualTo(0);
+        assertThat(stats.getExpiredCount()).isZero();
     }
 
     @Test
@@ -239,9 +239,9 @@ public class B_AirQualityService_UnitTest {
         CacheAnalyticsData stats = airQualityService.getCacheAnalyticsData();
 
         assertThat(stats.getRequestsCount()).isEqualTo(1);
-        assertThat(stats.getCacheHits()).isEqualTo(0);
+        assertThat(stats.getCacheHits()).isZero();
         assertThat(stats.getCacheMisses()).isEqualTo(1);
-        assertThat(stats.getExpiredCount()).isEqualTo(0);
+        assertThat(stats.getExpiredCount()).isZero();
     }
 
     public String readFile(String fileName) throws IOException {

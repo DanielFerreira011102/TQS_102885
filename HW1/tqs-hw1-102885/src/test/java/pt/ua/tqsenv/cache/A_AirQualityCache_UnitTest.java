@@ -29,7 +29,7 @@ class A_AirQualityCache_UnitTest {
     @Test
     @DisplayName("Trying to get an element not in the cache")
     public void whenGettingNonExistingElement_returnNullAndCacheMisses() {
-        assertThat(cache.getStats().getCacheMisses()).isEqualTo(0);
+        assertThat(cache.getStats().getCacheMisses()).isZero();
 
         AirQualityData result = cache.get("Viseu");
 
@@ -40,7 +40,7 @@ class A_AirQualityCache_UnitTest {
     @Test
     @DisplayName("Trying to get an element in the cache")
     public void whenGettingExistingElement_returnElementAndCacheHits() {
-        assertThat(cache.getStats().getCacheHits()).isEqualTo(0);
+        assertThat(cache.getStats().getCacheHits()).isZero();
 
         cache.put(dataMock, "Viseu");
         AirQualityData result = cache.get("Viseu");
@@ -98,7 +98,7 @@ class A_AirQualityCache_UnitTest {
         assertThat(stats.getRequestsCount()).isEqualTo(7);
         assertThat(stats.getCacheHits()).isEqualTo(4);
         assertThat(stats.getCacheMisses()).isEqualTo(3);
-        assertThat(stats.getExpiredCount()).isEqualTo(0);
+        assertThat(stats.getExpiredCount()).isZero();
     }
 
     private void sleep(Double time) throws InterruptedException {
