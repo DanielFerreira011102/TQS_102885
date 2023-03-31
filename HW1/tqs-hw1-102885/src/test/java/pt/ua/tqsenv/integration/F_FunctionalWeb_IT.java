@@ -16,7 +16,7 @@ import pt.ua.tqsenv.integration.pages.SearchPage;
 import java.time.Duration;
 
 @SpringBootTest
-public class F_FunctionalWeb_IT {
+class F_FunctionalWeb_IT {
   private ChromeDriver driver;
   private SearchPage searchPage;
   private ResultsPage resultsPage;
@@ -48,7 +48,7 @@ public class F_FunctionalWeb_IT {
   }
 
   @Test
-  public void FunctionalWeb() {
+  void FunctionalWeb() {
 
     assertThat(driver.getTitle()).isEqualTo("Air Quality Test App");
 

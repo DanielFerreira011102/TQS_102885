@@ -22,13 +22,13 @@ class A_AirQualityCache_UnitTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         cache = null;
     }
 
     @Test
     @DisplayName("Trying to get an element not in the cache")
-    public void whenGettingNonExistingElement_returnNullAndCacheMisses() {
+    void whenGettingNonExistingElement_returnNullAndCacheMisses() {
         assertThat(cache.getStats().getCacheMisses()).isZero();
 
         AirQualityData result = cache.get("Viseu");
@@ -39,7 +39,7 @@ class A_AirQualityCache_UnitTest {
 
     @Test
     @DisplayName("Trying to get an element in the cache")
-    public void whenGettingExistingElement_returnElementAndCacheHits() {
+    void whenGettingExistingElement_returnElementAndCacheHits() {
         assertThat(cache.getStats().getCacheHits()).isZero();
 
         cache.put(dataMock, "Viseu");
@@ -52,7 +52,7 @@ class A_AirQualityCache_UnitTest {
     @Test
     @DisplayName("Trying to get an expired element and refreshing TTL")
     //@Disabled("Takes 1 minute to complete")
-    public void whenGettingExpiredElement_returnNull() throws InterruptedException {
+    void whenGettingExpiredElement_returnNull() throws InterruptedException {
         Integer cacheTTL = cache.getCacheTTLSeconds();
         cache.put(dataMock, "Viseu");
         cache.put(dataMock, "Aveiro");
@@ -77,7 +77,7 @@ class A_AirQualityCache_UnitTest {
 
     @Test
     @DisplayName("Checking cache analytics")
-    public void whenGettingCacheStats_returnCorrectData() {
+    void whenGettingCacheStats_returnCorrectData() {
         cache.put(dataMock, "Viseu");
         cache.put(dataMock, "Lisbon:2023-03-29:false:4:true");
         cache.put(dataMock, "Madrid::true:1:false");

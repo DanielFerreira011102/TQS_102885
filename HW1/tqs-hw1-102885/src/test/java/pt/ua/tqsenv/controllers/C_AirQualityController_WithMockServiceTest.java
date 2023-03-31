@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
  * by injecting a MockMvc reference
  */
 @WebMvcTest(AirQualityController.class)
-public class C_AirQualityController_WithMockServiceTest {
+class C_AirQualityController_WithMockServiceTest {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired

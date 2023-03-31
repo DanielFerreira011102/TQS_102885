@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Component
 public class Cache<T> {
-    private final Map<String, CachedData<T>> cache = new HashMap<>();
+    private final Map<String, CachedData<T>> cachedMap = new HashMap<>();
     private Integer requestsCount = 0;
     private Integer cacheHits = 0;
     private Integer cacheMisses = 0;
@@ -25,13 +25,13 @@ public class Cache<T> {
     public T get(String key) {
         requestsCount++;
 
-        CachedData<T> cachedData = cache.get(key);
+        CachedData<T> cachedData = cachedMap.get(key);
 
         if (cachedData == null || cachedData.isExpired()) {
 
             if (cachedData != null) {
                 expiredCount++;
-                cache.remove(key);
+                cachedMap.remove(key);
             }
 
             cacheMisses++;
@@ -43,14 +43,14 @@ public class Cache<T> {
     }
 
     public void put(T data, String key) {
-        CachedData<T> cachedData = cache.get(key);
+        CachedData<T> cachedData = cachedMap.get(key);
 
         if (cachedData != null) {
             cachedData.setTTL(Duration.ofSeconds(cacheTTLSeconds));
         }
         else {
-            cachedData = new CachedData<T>(data, Duration.ofSeconds(cacheTTLSeconds));
-            cache.put(key, cachedData);
+            cachedData = new CachedData<>(data, Duration.ofSeconds(cacheTTLSeconds));
+            cachedMap.put(key, cachedData);
         }
     }
 
@@ -67,7 +67,7 @@ public class Cache<T> {
     @Scheduled(fixedRateString = "${cache.ttl.seconds:60}") // Run every minute
     private void removeExpiredElements() {
         int removedCount = 0;
-        Iterator<Map.Entry<String, CachedData<T>>> iterator = cache.entrySet().iterator();
+        Iterator<Map.Entry<String, CachedData<T>>> iterator = cachedMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, CachedData<T>> entry = iterator.next();
             if (entry.getValue().isExpired()) {

@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class B_AirQualityService_UnitTest {
+class B_AirQualityService_UnitTest {
 
     @Mock
     private RestTemplate restTemplate;
@@ -44,7 +44,7 @@ public class B_AirQualityService_UnitTest {
 
     @Test
     @DisplayName("Trying to get the current air quality data of a location")
-    public void whenResolveViseuCurrentUrl_returnViseuCurrentAirQualityData() throws Exception {
+    void whenResolveViseuCurrentUrl_returnViseuCurrentAirQualityData() throws Exception {
         // Setup
         String location = "Viseu";
 
@@ -65,8 +65,7 @@ public class B_AirQualityService_UnitTest {
         // Test
         CurrentAirQualityData result = airQualityService.getCurrentAirQualityData(location);
 
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(testData);
+        assertThat(result).isNotNull().isEqualTo(testData);
 
         CacheAnalyticsData stats = airQualityService.getCacheAnalyticsData();
 
@@ -78,7 +77,7 @@ public class B_AirQualityService_UnitTest {
 
     @Test
     @DisplayName("Trying to get the forecast air quality data of a location on a specific day")
-    public void whenResolveViseuForecastUrlWithDate_returnViseuForecastAirQualityData() throws Exception {
+    void whenResolveViseuForecastUrlWithDate_returnViseuForecastAirQualityData() throws Exception {
         // Setup
         String location = "Viseu";
         String date = "2023-03-30";
@@ -99,8 +98,7 @@ public class B_AirQualityService_UnitTest {
         // Test
         ForecastAirQualityData result = airQualityService.getForecastAirQualityData(location, date, false, 1, false);
 
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(testData);
+        assertThat(result).isNotNull().isEqualTo(testData);
 
         CacheAnalyticsData stats = airQualityService.getCacheAnalyticsData();
 
@@ -112,7 +110,7 @@ public class B_AirQualityService_UnitTest {
 
     @Test
     @DisplayName("Trying to get the forecast air quality data of a location, including current data and hours")
-    public void whenResolveViseuForecastUrlWithDateAndIncludeCurrentAndHours_returnViseuForecastAirQualityData() throws Exception {
+    void whenResolveViseuForecastUrlWithDateAndIncludeCurrentAndHours_returnViseuForecastAirQualityData() throws Exception {
         // Setup
         String location = "Viseu";
         String date = "2023-03-30";
@@ -166,8 +164,7 @@ public class B_AirQualityService_UnitTest {
         // Test
         ForecastAirQualityData result = airQualityService.getForecastAirQualityData(location, date, true, 1, true);
 
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(testData);
+        assertThat(result).isNotNull().isEqualTo(testData);
 
         CacheAnalyticsData stats = airQualityService.getCacheAnalyticsData();
 
@@ -179,7 +176,7 @@ public class B_AirQualityService_UnitTest {
 
     @Test
     @DisplayName("Trying to get the forecast air quality data of a location by days")
-    public void whenResolveViseuForecastUrlWithForecastDays_returnViseuForecastAirQualityData() throws Exception {
+    void whenResolveViseuForecastUrlWithForecastDays_returnViseuForecastAirQualityData() throws Exception {
         // Setup
         String location = "Viseu";
 
@@ -233,8 +230,7 @@ public class B_AirQualityService_UnitTest {
         // Test
         ForecastAirQualityData result = airQualityService.getForecastAirQualityData(location, null, false, 1, true);
 
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(testData);
+        assertThat(result).isNotNull().isEqualTo(testData);
 
         CacheAnalyticsData stats = airQualityService.getCacheAnalyticsData();
 
@@ -244,7 +240,7 @@ public class B_AirQualityService_UnitTest {
         assertThat(stats.getExpiredCount()).isZero();
     }
 
-    public String readFile(String fileName) throws IOException {
+    private String readFile(String fileName) throws IOException {
         ClassPathResource resource = new ClassPathResource(fileName);
         InputStream inputStream = resource.getInputStream();
         byte[] bdata = FileCopyUtils.copyToByteArray(inputStream);
