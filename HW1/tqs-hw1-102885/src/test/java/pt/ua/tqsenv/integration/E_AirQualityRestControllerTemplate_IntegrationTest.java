@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class E_AirQualityRestControllerTemplateIT {
+public class E_AirQualityRestControllerTemplate_IntegrationTest {
 
     // will need to use the server port for the invocation url
     @LocalServerPort
