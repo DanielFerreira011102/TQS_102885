@@ -10,6 +10,9 @@ import java.util.List;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper=true)
+@ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ForecastAirQualityData extends AirQualityData {
     @JsonProperty("current")
