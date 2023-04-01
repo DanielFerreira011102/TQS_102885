@@ -1,13 +1,18 @@
 package pt.ua.tqsenv.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import io.cucumber.java.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import pt.ua.tqsenv.AirQualityApplication;
 import pt.ua.tqsenv.integration.pages.CachePage;
 import pt.ua.tqsenv.integration.pages.ErrorPage;
 import pt.ua.tqsenv.integration.pages.ResultsPage;
@@ -15,13 +20,24 @@ import pt.ua.tqsenv.integration.pages.SearchPage;
 
 import java.time.Duration;
 
-@SpringBootTest
 class F_FunctionalWeb_IT {
   private ChromeDriver driver;
   private SearchPage searchPage;
   private ResultsPage resultsPage;
   private CachePage cachePage;
   private ErrorPage errorPage;
+
+  private static ConfigurableApplicationContext app;
+
+  @BeforeAll
+  public static void startSpringBootApplication() {
+    app = SpringApplication.run(AirQualityApplication.class);
+  }
+
+  @AfterAll
+  public static void stopSpringBootApplication() {
+    app.stop();
+  }
 
   @BeforeEach
   public void initializeDriver() {
