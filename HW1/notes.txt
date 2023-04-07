@@ -1,1 +1,1 @@
-"tqs_env": sqp_f85f3e73d2e1b4fe9949e408b7a6d2ae868624ae
+mvn clean verify sonar:sonar -Dsonar.projectKey=tqs_project_sonarqube -Dsonar.host.url=http://localhost:9000 -Dsonar.login=sqp_1f341bf7cf5a38d772b9cac34f7e6548658cad1e
