@@ -5,8 +5,14 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import pt.ua.tqsenv.entities.AirQualityData;
 import pt.ua.tqsenv.entities.CacheAnalyticsData;
+
+import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LONG;
+import static org.awaitility.Awaitility.await;
 
 @SpringBootTest
 class A_AirQualityCache_UnitTest {
@@ -59,14 +65,11 @@ class A_AirQualityCache_UnitTest {
 
         AirQualityData result;
 
-        sleep(cacheTTL * 0.2);
+        await().pollDelay((long)(cacheTTL * 0.2), TimeUnit.SECONDS).atMost(cacheTTL, TimeUnit.SECONDS).until(() -> true);
 
         cache.put(dataMock, "Viseu");
 
-        sleep(cacheTTL * 0.8 + 1);
-
-        result = cache.get("Viseu");
-        assertThat(result).isEqualTo(dataMock);
+        await().pollDelay((long)(cacheTTL * 0.8 + 1), TimeUnit.SECONDS).atMost(cacheTTL, TimeUnit.SECONDS).untilAsserted(() -> assertThat(cache.get("Viseu")).isEqualTo(dataMock));
 
         result = cache.get("Aveiro");
         assertThat(result).isNull();
@@ -101,17 +104,7 @@ class A_AirQualityCache_UnitTest {
         assertThat(stats.getExpiredCount()).isZero();
     }
 
-    private void sleep(Double time) throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
-        new Thread(() -> {
-            try {
-                Thread.sleep((long) (time * 1000L)); // wait for cache to expire
-                latch.countDown();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-        latch.await();
+    private void sleep(Double time) {
+        await().pollDelay(Duration.ofSeconds(time.longValue())).atMost(Duration.ofSeconds(time.longValue())).until(() -> true);
     }
 }

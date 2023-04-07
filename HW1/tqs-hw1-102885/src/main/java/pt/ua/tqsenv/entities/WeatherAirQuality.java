@@ -15,7 +15,8 @@ public class WeatherAirQuality {
     private Double no2;
     private Double o3;
     private Double so2;
-    private Double pm2_5;
+    @JsonProperty("pm2_5")
+    private Double pm25;
     private Double pm10;
     @JsonProperty("us-epa-index")
     private Integer usEpaIndex;

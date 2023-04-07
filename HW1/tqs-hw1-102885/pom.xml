@@ -54,6 +54,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>${rest-assured.version}</version>
@@ -262,6 +268,7 @@
         <jacoco.version>0.8.8</jacoco.version>
         <spring-boot.version>3.0.4</spring-boot.version>
         <lombok.version>1.18.26</lombok.version>
+        <awaitility.version>4.2.0</awaitility.version>
         <slf4j.version>2.0.6</slf4j.version>
         <logback.version>1.4.6</logback.version>
         <selenium.version>4.8.1</selenium.version>

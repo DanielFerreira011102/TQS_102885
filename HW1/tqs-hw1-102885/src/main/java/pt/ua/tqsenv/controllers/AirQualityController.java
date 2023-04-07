@@ -39,9 +39,9 @@ public class AirQualityController {
     @GetMapping("/forecast")
     public ResponseEntity<AirQualityData> getForecastAirQualityData(@RequestParam(name = "location") String location,
             @RequestParam(name = "date", required = false) String date,
-            @RequestParam(name = "current", defaultValue = "false") Boolean current,
-            @RequestParam(name = "days", defaultValue = "1") Integer days,
-            @RequestParam(name = "hours", defaultValue = "false") Boolean hours) {
+            @RequestParam(name = "current", defaultValue = "false") boolean current,
+            @RequestParam(name = "days", defaultValue = "1") int days,
+            @RequestParam(name = "hours", defaultValue = "false") boolean hours) {
 
         logger.info("Received request for forecast air quality data for location {} with date {}, current={}, days={}, hours={}",
                 location, date, current, days, hours);
