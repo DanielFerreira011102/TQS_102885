@@ -25,7 +25,7 @@ public class AirQualityController {
     public ResponseEntity<AirQualityData> getCurrentAirQualityData(@RequestParam(name = "location") String location) {
 
         logger.info("Received request for current air quality data for location: {}", location);
-        
+
         CurrentAirQualityData currentAirQualityData = airQualityService.getCurrentAirQualityData(location);
         if (currentAirQualityData != null) {
             logger.info("Returning current air quality data for location: {}", location);
