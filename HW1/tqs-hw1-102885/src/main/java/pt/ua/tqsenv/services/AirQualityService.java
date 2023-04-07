@@ -3,6 +3,8 @@ package pt.ua.tqsenv.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ import java.util.List;
 
 @Service
 public class AirQualityService {
+
+    Logger logger = LoggerFactory.getLogger(AirQualityService.class);
+
     @Value("${weather.api.url}")
     private String weatherApiUrl;
     @Value("${weather.api.key}")
@@ -33,36 +38,67 @@ public class AirQualityService {
     }
 
     public CurrentAirQualityData getCurrentAirQualityData(String location) {
+        logger.info("Calculating cache access key for location {}", location);
+
         String key = getKey(location);
+
+        logger.info("Trying to fetch current air quality data from cache for location {}", location);
 
         CurrentAirQualityData cachedData = (CurrentAirQualityData) cache.get(key);
 
         if (cachedData != null) {
+            logger.info("Successfully fetched current air quality data from cache for location {}", location);
             return cachedData;
         }
 
+        logger.info("Trying to fetch current air quality data from API for location {}", location);
+
         CurrentAirQualityData fetchedData = fetchCurrentAirQualityData(location);
+
+        logger.info("Successfully fetched current air quality data from API for location {}", location);
+
+        logger.info("Caching current air quality data for location {}", location);
+
         cache.put(fetchedData, key);
 
         return fetchedData;
     }
 
     public ForecastAirQualityData getForecastAirQualityData(String location, String date, Boolean current, Integer days, Boolean hours) {
+        logger.info("Calculating cache access key for location {} with date {}, current={}, days={}, hours={}",
+                location, date, current, days, hours);
+
         String key = getKey(location, date, current, days, hours);
+
+        logger.info("Trying to fetch forecast air quality data from cache for location {} with date {}, current={}, days={}, hours={}",
+                location, date, current, days, hours);
 
         ForecastAirQualityData cachedData = (ForecastAirQualityData) cache.get(key);
 
         if (cachedData != null) {
+            logger.info("Successfully fetched forecast air quality data from cache for location {} with date {}, current={}, days={}, hours={}",
+                    location, date, current, days, hours);
             return cachedData;
         }
 
+        logger.info("Trying to fetch forecast air quality data from API for location {} with date {}, current={}, days={}, hours={}",
+                location, date, current, days, hours);
+
         ForecastAirQualityData fetchedData = fetchForecastAirQualityData(location, date, current, days, hours);
+
+        logger.info("Successfully fetched forecast air quality data from API for location {} with date {}, current={}, days={}, hours={}",
+                location, date, current, days, hours);
+
+        logger.info("Caching forecast air quality data for location {} with date {}, current={}, days={}, hours={}",
+                location, date, current, days, hours);
+
         cache.put(fetchedData, key);
 
         return fetchedData;
     }
 
     public CacheAnalyticsData getCacheAnalyticsData() {
+        logger.info("Retrieving cache analytics data");
         return cache.getStats();
     }
 
@@ -99,13 +135,19 @@ public class AirQualityService {
             }
 
             // Throw an exception if the API request was not successful
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve air quality data.");
+            String errorMessage = "Failed to retrieve air quality data from API for location: " + location;
+            logger.error(errorMessage);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
         }
         catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error parsing JSON response from API.", e);
+            String errorMessage = "Error parsing JSON response from API for location: " + location;
+            logger.error(errorMessage, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, e);
         }
         catch (RestClientException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No matching location found.", e);
+            String errorMessage = "No matching location found for location: " + location;
+            logger.error(errorMessage, e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage, e);
         }
     }
 
@@ -116,7 +158,6 @@ public class AirQualityService {
                 weatherApiKey,
                 location,
                 date != null ? "&dt=" + date : "&days=" + forecastDays);
-
         try {
             // Make the API request
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(apiUrl, String.class);
@@ -206,13 +247,19 @@ public class AirQualityService {
             }
 
             // Throw an exception if the API request was not successful
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve air quality data.");
+            String errorMessage = "Failed to retrieve air quality data from API for location: " + location;
+            logger.error(errorMessage);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
         }
         catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error parsing JSON response from API.", e);
+            String errorMessage = "Error parsing JSON response from API for location: " + location;
+            logger.error(errorMessage, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, e);
         }
         catch (RestClientException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No matching location found.", e);
+            String errorMessage = "No matching location found for location: " + location;
+            logger.error(errorMessage, e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage, e);
         }
     }
 

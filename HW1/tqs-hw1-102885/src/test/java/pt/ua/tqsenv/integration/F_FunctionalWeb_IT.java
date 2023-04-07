@@ -41,7 +41,6 @@ class F_FunctionalWeb_IT {
 
   @BeforeEach
   public void initializeDriver() {
-
     // I think the newest Chrome version is not 100% compatible
     ChromeOptions options = new ChromeOptions();
     options.addArguments("--remote-allow-origins=*");
@@ -54,7 +53,6 @@ class F_FunctionalWeb_IT {
     cachePage = new CachePage(driver);
     errorPage = new ErrorPage(driver);
   }
-
 
   @AfterEach
   public void tearDown() {

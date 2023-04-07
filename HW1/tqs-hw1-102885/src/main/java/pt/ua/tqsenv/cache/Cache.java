@@ -1,5 +1,7 @@
 package pt.ua.tqsenv.cache;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,9 @@ import java.util.Map;
 
 @Component
 public class Cache<T> {
+
+    private static final Logger logger = LoggerFactory.getLogger(Cache.class);
+
     private final Map<String, CachedData<T>> cachedMap = new HashMap<>();
     private Integer requestsCount = 0;
     private Integer cacheHits = 0;
@@ -27,18 +32,22 @@ public class Cache<T> {
 
         CachedData<T> cachedData = cachedMap.get(key);
 
-        if (cachedData == null || cachedData.isExpired()) {
+        if (cachedData == null) {
+            cacheMisses++;
+            logger.debug("Cache miss for key: {}", key);
+            return null;
+        }
 
-            if (cachedData != null) {
-                expiredCount++;
-                cachedMap.remove(key);
-            }
-
+        if (cachedData.isExpired()) {
+            expiredCount++;
+            cachedMap.remove(key);
+            logger.debug("Removed expired data from cache for key: {}", key);
             cacheMisses++;
             return null;
         }
 
         cacheHits++;
+        logger.debug("Cache hit for key: {}", key);
         return cachedData.getData();
     }
 
@@ -47,16 +56,18 @@ public class Cache<T> {
 
         if (cachedData != null) {
             cachedData.setTTL(Duration.ofSeconds(cacheTTLSeconds));
-        }
-        else {
+            logger.debug("Refreshed data in cache for key: {}", key);
+        } else {
             cachedData = new CachedData<>(data, Duration.ofSeconds(cacheTTLSeconds));
             cachedMap.put(key, cachedData);
+            logger.debug("Added data to cache for key: {}", key);
         }
     }
 
     public CacheAnalyticsData getStats() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = new Date();
+        logger.debug("Returning cache analytics data");
         return new CacheAnalyticsData(formatter.format(date), requestsCount, cacheHits, cacheMisses, expiredCount);
     }
 
@@ -73,9 +84,11 @@ public class Cache<T> {
             if (entry.getValue().isExpired()) {
                 iterator.remove();
                 removedCount++;
+                logger.debug("Removed expired data from cache for key: {}", entry.getKey());
             }
         }
         expiredCount += removedCount;
+        logger.debug("Removed {} expired elements from cache", removedCount);
     }
 
 
