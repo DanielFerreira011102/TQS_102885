@@ -98,7 +98,7 @@ class F_FunctionalWeb_IT {
 
     searchPage.searchFor("fffffffffffffffff");
 
-    assertThat(errorPage.getErrorMessage()).isEqualTo("ERROR 404: Not Found");
+    assertThat(errorPage.getErrorMessage()).isEqualTo("ERROR 400: Bad Request");
     errorPage.clickCacheLink();
 
     assertThat(cachePage.getRequestCount()).isEqualTo("4");

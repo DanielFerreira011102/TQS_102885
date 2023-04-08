@@ -22,7 +22,7 @@ Feature: Air Quality App Test
     And the expired count should be "0"
     And I click on the Search link
     When I search for "fffffffffffffffff"
-    Then the error message should be "ERROR 404: Not Found"
+    Then the error message should be "ERROR 400: Bad Request"
     And I click on the Cache link
     Then the request count should be "4"
     And the cache hits count should be "1"

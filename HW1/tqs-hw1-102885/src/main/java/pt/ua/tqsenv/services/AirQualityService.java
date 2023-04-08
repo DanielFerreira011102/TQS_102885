@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -110,41 +111,42 @@ public class AirQualityService {
             // Make the API request
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(apiUrl, String.class);
 
-            // Check if the API request was successful
-            if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                // Parse the JSON response into an AirQualityData object
-                JsonNode rootNode = objectMapper.readTree(responseEntity.getBody());
+            // Parse the JSON response into an AirQualityData object
+            JsonNode rootNode = objectMapper.readTree(responseEntity.getBody());
 
-                // Extract the required data from the JSON response
-                JsonNode locationNode = rootNode.at("/location");
-                JsonNode currentAirQualityNode = rootNode.at("/current/air_quality");
-                JsonNode lastUpdatedEpochNode = rootNode.at("/current/last_updated_epoch");
-                JsonNode lastUpdatedNode = rootNode.at("/current/last_updated");
-                JsonNode conditionNode = rootNode.at("/current/condition/text");
-                JsonNode isDayNode = rootNode.at("/current/is_day");
+            // Extract the required data from the JSON response
+            JsonNode locationNode = rootNode.at("/location");
+            JsonNode currentAirQualityNode = rootNode.at("/current/air_quality");
+            JsonNode lastUpdatedEpochNode = rootNode.at("/current/last_updated_epoch");
+            JsonNode lastUpdatedNode = rootNode.at("/current/last_updated");
+            JsonNode conditionNode = rootNode.at("/current/condition/text");
+            JsonNode isDayNode = rootNode.at("/current/is_day");
 
                 // Create a new CurrentAirQualityData object with the extracted data
 
-                return CurrentAirQualityData.builder()
-                        .location(objectMapper.treeToValue(locationNode, WeatherLocation.class))
-                        .airQuality(objectMapper.treeToValue(currentAirQualityNode, WeatherAirQuality.class))
-                        .condition(conditionNode.asText())
-                        .lastUpdatedEpoch(lastUpdatedEpochNode.asLong())
-                        .lastUpdated(lastUpdatedNode.asText())
-                        .isDay(isDayNode.asBoolean()).build();
-            }
-
-            // Throw an exception if the API request was not successful
-            String errorMessage = "Failed to retrieve current air quality data from API for location: " + location;
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
+            return CurrentAirQualityData.builder()
+                    .location(objectMapper.treeToValue(locationNode, WeatherLocation.class))
+                    .airQuality(objectMapper.treeToValue(currentAirQualityNode, WeatherAirQuality.class))
+                    .condition(conditionNode.asText())
+                    .lastUpdatedEpoch(lastUpdatedEpochNode.asLong())
+                    .lastUpdated(lastUpdatedNode.asText())
+                    .isDay(isDayNode.asBoolean()).build();
         }
         catch (JsonProcessingException e) {
             String errorMessage = "Error parsing JSON current response from API for location: " + location;
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, e);
         }
         catch (RestClientException e) {
-            String errorMessage = "No matching location found for location: " + location;
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage, e);
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                HttpClientErrorException httpError = (HttpClientErrorException) e;
+                JsonNode root = mapper.readTree(httpError.getResponseBodyAsString());
+                String errorMessage = root.path("error").path("message").asText();
+                throw new ResponseStatusException(httpError.getStatusCode(), errorMessage, e);
+            } catch (JsonProcessingException ex) {
+                String errorMessage = "Error parsing JSON current error response from API for location: " + location;
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, ex);
+            }
         }
     }
 
@@ -162,57 +164,58 @@ public class AirQualityService {
             // Make the API request
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(apiUrl, String.class);
 
-            // Check if the API request was successful
-            if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                // Parse the JSON response into an AirQualityData object
-                JsonNode rootNode = objectMapper.readTree(responseEntity.getBody());
+            // Parse the JSON response into an AirQualityData object
+            JsonNode rootNode = objectMapper.readTree(responseEntity.getBody());
 
-                // Extract the required data from the JSON response
-                JsonNode locationNode = rootNode.at("/location");
+            // Extract the required data from the JSON response
+            JsonNode locationNode = rootNode.at("/location");
 
-                // Create a new ForecastAirQualityData object with the extracted data
-                ForecastAirQualityData forecastAirQualityData = new ForecastAirQualityData();
+            // Create a new ForecastAirQualityData object with the extracted data
+            ForecastAirQualityData forecastAirQualityData = new ForecastAirQualityData();
 
-                forecastAirQualityData.setLocation(objectMapper.treeToValue(locationNode, WeatherLocation.class));
+            forecastAirQualityData.setLocation(objectMapper.treeToValue(locationNode, WeatherLocation.class));
 
-                if (date != null) {
-                    JsonNode dayNode = rootNode.at("/forecast/forecastday/0");
-                    parseForecastDayNode(dayNode, objectMapper, forecastAirQualityData, includeHours);
-                } else {
-                    List<ForecastAirQualityData> daysAirQualityData = new ArrayList<>();
-                    for (JsonNode dayNode : rootNode.at("/forecast/forecastday")) {
-                        ForecastAirQualityData dayForecastAirQualityData = new ForecastAirQualityData();
-                        parseForecastDayNode(dayNode, objectMapper, dayForecastAirQualityData, includeHours);
-                        daysAirQualityData.add(dayForecastAirQualityData);
-                    }
-                    forecastAirQualityData.setDays(daysAirQualityData);
+            if (date != null) {
+                JsonNode dayNode = rootNode.at("/forecast/forecastday/0");
+                parseForecastDayNode(dayNode, objectMapper, forecastAirQualityData, includeHours);
+            } else {
+                List<ForecastAirQualityData> daysAirQualityData = new ArrayList<>();
+                for (JsonNode dayNode : rootNode.at("/forecast/forecastday")) {
+                    ForecastAirQualityData dayForecastAirQualityData = new ForecastAirQualityData();
+                    parseForecastDayNode(dayNode, objectMapper, dayForecastAirQualityData, includeHours);
+                    daysAirQualityData.add(dayForecastAirQualityData);
                 }
-
-                if (includeCurrent) {
-                    CurrentAirQualityData currentAirQualityData = new CurrentAirQualityData();
-                    JsonNode currentAirQualityNode = rootNode.at("/current/air_quality");
-                    currentAirQualityData.setAirQuality(objectMapper.treeToValue(currentAirQualityNode, WeatherAirQuality.class));
-                    currentAirQualityData.setCondition(rootNode.at("/current/condition/text").asText());
-                    currentAirQualityData.setLastUpdatedEpoch(rootNode.at("/current/last_updated_epoch").asLong());
-                    currentAirQualityData.setLastUpdated(rootNode.at("/current/last_updated").asText());
-                    currentAirQualityData.setIsDay(rootNode.at("/current/is_day").asBoolean());
-                    forecastAirQualityData.setCurrentAirQualityData(currentAirQualityData);
-                }
-
-                return forecastAirQualityData;
+                forecastAirQualityData.setDays(daysAirQualityData);
             }
 
-            // Throw an exception if the API request was not successful
-            String errorMessage = "Failed to retrieve forecast air quality data from API for location: " + location;
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
+            if (includeCurrent) {
+                CurrentAirQualityData currentAirQualityData = new CurrentAirQualityData();
+                JsonNode currentAirQualityNode = rootNode.at("/current/air_quality");
+                currentAirQualityData.setAirQuality(objectMapper.treeToValue(currentAirQualityNode, WeatherAirQuality.class));
+                currentAirQualityData.setCondition(rootNode.at("/current/condition/text").asText());
+                currentAirQualityData.setLastUpdatedEpoch(rootNode.at("/current/last_updated_epoch").asLong());
+                currentAirQualityData.setLastUpdated(rootNode.at("/current/last_updated").asText());
+                currentAirQualityData.setIsDay(rootNode.at("/current/is_day").asBoolean());
+                forecastAirQualityData.setCurrentAirQualityData(currentAirQualityData);
+            }
+
+            return forecastAirQualityData;
         }
         catch (JsonProcessingException e) {
             String errorMessage = "Error parsing JSON forecast response from API for location: " + location;
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, e);
         }
         catch (RestClientException e) {
-            String errorMessage = "No matching location found for location: " + location;
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage, e);
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                HttpClientErrorException httpError = (HttpClientErrorException) e;
+                JsonNode root = mapper.readTree(httpError.getResponseBodyAsString());
+                String errorMessage = root.path("error").path("message").asText();
+                throw new ResponseStatusException(httpError.getStatusCode(), errorMessage, e);
+            } catch (JsonProcessingException ex) {
+                String errorMessage = "Error parsing JSON current error response from API for location: " + location;
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, ex);
+            }
         }
     }
 
