@@ -1,4 +1,4 @@
-# TQS_102885
+# TQS
 Welcome to the official repository of Daniel Ferreira for TQS (Teste e Qualidade de Software) 2023 class! This repository contains all the Lab activites completed as we followed the course and learned about the main concepts, techniques, and tools related to software testing and quality assurance.
 
 The repository is organized into different sections, each one covering a specific topic or assignment. You can find here code samples, as well as the instructions and guidelines for the assignments and projects.
